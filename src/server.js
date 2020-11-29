@@ -30,7 +30,7 @@ const PORT = process.env.PORT || 8080;
 
 
 
-app.listen(PORT, () => {
+app.listen(process.env.PORT || 8080, () => {
     console.log(`Server ${PORT} is running`)
 })
 
