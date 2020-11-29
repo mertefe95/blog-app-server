@@ -27,11 +27,10 @@ mongoose.connect(uri, {
 
 
 const PORT = process.env.PORT || 8080;
-const host = '0.0.0.0';
 
 
 
-app.listen(PORT, host, () => {
+app.listen(PORT, () => {
     console.log(`Server ${PORT} is running`)
 })
 
