@@ -27,10 +27,11 @@ mongoose.connect("mongodb+srv://efemert95:efemert95@blog.go3nn.mongodb.net/blog?
 
 
 const PORT = process.env.PORT || 8080;
+const host = '0.0.0.0';
 
 
 
-app.listen(process.env.PORT || 8080, () => {
+app.listen(PORT, host, () => {
     console.log(`Server ${PORT} is running`)
 })
 
