@@ -1,7 +1,7 @@
 const express = require('express');
 const router = new express.Router();
 const Post = require('../models/Post');
-
+const mongoose = require('mongoose');
 
 router.get('/posts', async (req, res) => {
     const posts = await Post.find();
