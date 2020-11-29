@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const postRouter = require('./routes/Post');
+
 const cors = require('cors');
 require('dotenv').config();
 
@@ -26,11 +27,6 @@ mongoose.connect(uri, {
 
 
 const PORT = process.env.PORT || 8080;
-
-
-if (process.env.NODE_ENV === "production") {
-    app.use(express.static('../../client/build'))
-}
 
 
 
