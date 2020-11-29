@@ -3,8 +3,13 @@
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
+  "engines": {
+    "node": "14.15.1",
+    "npm": "7.0.10"
+  },
   "scripts": {
     "client": "cd ../client && npm start",
+    "build": "webpack",
     "start": "node ./src/server.js",
     "dev": "concurrently  \"cd ./src && nodemon server.js\" \"npm run client\""
   },
