@@ -1,10 +1,6 @@
 const express = require('express');
 const router = new express.Router();
 const Post = require('../models/Post');
-const validator = require('validator');
-const bcrypt = require('bcryptjs');
-const mongoose = require('mongoose');
-
 
 
 router.get('/posts', async (req, res) => {
