@@ -11,7 +11,7 @@ app.use(cors())
 app.use(express.json())
 app.use('/api', postRouter)
 
-const uri = process.env.ATLAS_URI
+// const uri = process.env.ATLAS_URI
 
 
 const connection = mongoose.connection
@@ -19,7 +19,7 @@ connection.once('open', () => {
     console.log('MongoDB connection has established.')
 })
 
-mongoose.connect(uri, {
+mongoose.connect("mongodb+srv://efemert95:efemert95@blog.go3nn.mongodb.net/blog?retryWrites=true&w=majority", {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true
