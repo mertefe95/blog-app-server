@@ -67,7 +67,28 @@ router.patch('/posts/:id', async (req,res) => {
 })
 
 
+router.delete('/posts', (req, res) => {
+    const { blogTitle, blogText, authorName } = req.body
 
+    const userFound = User.deleteOne({ blogTitle, blogText, authorName })
+
+    if (!userFound) {
+        return res
+            .status(400)
+            .send({ error: "User does not exists. "})
+    }
+
+    return res
+        .status(200)
+        .send(userFound)
+})
+
+
+
+
+
+
+/*
 router.delete('/posts/:id', async (req,res) => {
     try {
         const post = await Post.findByIdAndDelete(req.params.id)
@@ -87,7 +108,7 @@ router.delete('/posts/:id', async (req,res) => {
     }
 })
 
-
+*/
 
 module.exports = router;
 
