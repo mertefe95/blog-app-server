@@ -67,6 +67,7 @@ router.patch('/posts/:id', async (req,res) => {
 })
 
 
+/*
 router.delete('/posts', (req, res) => {
     const { blogTitle, blogText, authorName } = req.body
 
@@ -83,14 +84,14 @@ router.delete('/posts', (req, res) => {
         .send(userFound)
 })
 
+*/
 
 
 
 
 
-/*
 router.delete('/posts/:id', async (req,res) => {
-    try {
+    
         const post = await Post.findByIdAndDelete(req.params.id)
 
 
@@ -103,12 +104,10 @@ router.delete('/posts/:id', async (req,res) => {
         return res
             .status(200)
             .send(post)
-    } catch (e) {
-        res.status(500).send()
-    }
+
 })
 
-*/
+
 
 module.exports = router;
 
