@@ -1,18 +1,20 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const postRouter = require('./routes/Post');
+const userRouter = require('./routes/User');
+
 
 const cors = require('cors');
 require('dotenv').config();
 
 const app = express();
 
-app.use(cors())
-app.use(express.json())
-app.use('/api', postRouter)
+app.use(cors());
+app.use(express.json());
+app.use('/api', postRouter);
+app.use('/api', userRouter);
 
 const uri = process.env.ATLAS_URI
-
 
 const connection = mongoose.connection
 connection.once('open', () => {
