@@ -91,8 +91,10 @@ router.delete('/posts', (req, res) => {
 
 
 router.delete('/posts/:id', async (req,res) => {
+
+        const {id} = req.body
     
-        const post = await Post.findByIdAndDelete(req.params.id)
+        const post = await Post.findByIdAndDelete(id)
 
 
         if (!post) {
