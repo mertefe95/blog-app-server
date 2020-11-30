@@ -14,7 +14,7 @@ app.use(express.json());
 app.use('/api', postRouter);
 app.use('/api', userRouter);
 
-const uri = process.env.ATLAS_URI
+const uri = "mongodb+srv://efemert95:efemert95@blog.go3nn.mongodb.net/blog?retryWrites=true&w=majority"
 
 const connection = mongoose.connection
 connection.once('open', () => {
