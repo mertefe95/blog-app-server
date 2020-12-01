@@ -66,7 +66,22 @@ router.patch('/posts/:id', async (req,res) => {
     }
 })
 
+router.put('/posts/:id', (req, res) => {
 
+        Post.findById(req.params.id).then(post => {
+        post.blogTitle = req.body.blogTitle;
+        post.blogText = req.body.blogText;
+        post.authorName = req.body.authorName;
+
+
+        post
+            .save()
+            .then(() => res.json("The Article is updated successfully."))
+            .catch(err => res.status(400).json(`Error: ${err}`))
+    })
+    .catch(err => res.status(400).json(`Error: ${err}`))
+
+})
 /*
 router.delete('/posts', (req, res) => {
     const { blogTitle, blogText, authorName } = req.body
