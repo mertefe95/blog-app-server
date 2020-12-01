@@ -19,9 +19,19 @@ router.get('/posts', async (req, res) => {
 })
 
 router.get('/posts/:id', async (req, res) => {
-    const post = await Post.findById(req.params.id)
-    res.json(post);
+    const _id = req.params.id
 
+    Post.findById(_id)
+    .then((post) => {
+        if (!post) {
+        return res.status(400).send()
+      }
+
+      res.send(post)
+    })
+    .catch((e) => {
+      res.status(500).send()
+    })
 })
 
 router.post('/posts', async (req, res) => {
@@ -100,9 +110,6 @@ router.delete('/posts', (req, res) => {
 })
 
 */
-
-
-
 
 
 router.delete('/posts/:id', async (req,res) => {
