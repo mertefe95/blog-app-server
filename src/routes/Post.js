@@ -19,19 +19,9 @@ router.get('/posts', async (req, res) => {
 })
 
 router.get('/posts/:id', async (req, res) => {
-    const _id = req.params.id
-
-    Post.findById(_id)
-    .then((post) => {
-        if (!post) {
-        return res.status(400).send()
-      }
-
-      res.send(post)
-    })
-    .catch((e) => {
-      res.status(500).send()
-    })
+    Post.findById(req.params.id)
+        .then(post => res.json(post))
+        .catch(err => res.status(400).json(`Error: ${err} `))
 })
 
 router.post('/posts', async (req, res) => {
@@ -113,23 +103,10 @@ router.delete('/posts', (req, res) => {
 
 
 router.delete('/posts/:id', async (req,res) => {
-
-        const {id} = req.body
-    
-        const post = await Post.findByIdAndDelete(id)
-
-
-        if (!post) {
-            return res
-                .status(400)
-                .send()
-        }
-
-        return res
-            .status(200)
-            .send(post)
-
-})
+    Post.findByIdAndDelete(req.params.id)
+        .then(() => res.json('The Post is DELETED.'))
+        .catch(err => res.status(400).json(`Error: ${err}`));
+});
 
 
 
