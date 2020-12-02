@@ -4,6 +4,9 @@ const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const validator = require('validator');
+const auth = require('../middleware/auth')
+
+require('dotenv').config();
 
 router.get('/users', async (req, res) => {
     const users = await User.find({})
@@ -33,10 +36,26 @@ router.get('/users/:id', async (req, res) => {
         .status(user)
 })
 
+router.get('/', auth, async (req, res) => {
+    const user = await User.findById(req.user);
+    res.json({
+        username: user.username,
+        id: user._id,
+    });
+
+});
+
 router.post('/register', async (req, res) => {
     const { username, email, password } = req.body
     const digit = /^(?=.*\d)/
     const upperLetter = /^(?=.*[A-Z])/
+
+    if (!username || !email || !password) {
+        return res
+            .status(400)
+            .send({ error: "Please fill all the credentials. "})
+    }
+
 
     if (!validator.isEmail(email) || !email) {
         return res.status(400).send({ error: 'Please enter a valid email. ' })
@@ -52,9 +71,11 @@ router.post('/register', async (req, res) => {
             .send({ error: "Please enter a password that is at least 8 characters or more."})
     }
 
+
+
     try {
-        let userExistsByEmail = await User.find({ email })
-        let userExistsByUserName = await User.find ({ username })
+        let userExistsByEmail = await User.find({ email: email })
+        let userExistsByUserName = await User.find ({ username: username })
 
         if (userExistsByEmail.length > 1) {
             return res
@@ -89,7 +110,13 @@ router.post('/login', async (req, res) => {
     try {
         const { username, email, password } = req.body 
 
-        const user = await User.findOne({ email, username })
+        if (!username || !email || !password) {
+            return res
+                .status(400)
+                .send({ error: "Please fill the missing fields. "})
+        }
+
+        const user = await User.findOne({ email  })
         if (!user) {
             return res
                 .status(400)
@@ -101,20 +128,44 @@ router.post('/login', async (req, res) => {
                     .status(400)
                     .send({ error: "Wrong or empty password." })
             } else if (passwordCompare) {
-                const token = await jwt.sign(
+                const token = jwt.sign(
                     { email: user.email, id: user.id },
-                    process.env.SECRET_TOKEN
-                )
-
+                    "b7f438b7735800f267494e0b008f8406f84ad9bb72cf7ec687baa5b669427cb0212e8fe5f00bcb5c146c5404a4593ee6"
+                );
+                    
                 return res
                     .status(200)
-                    .json({ token: token })
+                    .json({ token,
+                    user: {
+                        id: user._id,
+                        username: user.username,
+                        email: user.email
+                    }})
             }
         }
 } catch (e) {
     res.status(500).send(e)
 }
 })
+
+router.post("/tokenIsValid", async (req, res) => {
+    try {
+        const token = req.header("x-auth-token");
+        if (!token) return res.json(false);
+
+        const verified = jwt.verify(token, "b7f438b7735800f267494e0b008f8406f84ad9bb72cf7ec687baa5b669427cb0212e8fe5f00bcb5c146c5404a4593ee6");
+        if (!verified) return res.json(false);
+
+
+        const user = await User.find(verified.id);
+        if (!user) return res.json(false);
+
+        return res.json(true);
+    } catch (err) {
+        res.status(500).json({ error: err.message })
+    }})
+
+
 
 
 module.exports = router;
