@@ -24,19 +24,17 @@ router.get('/posts/:id', async (req, res) => {
         .catch(err => res.status(400).json(`Error: ${err} `))
 })
 
-router.post('/posts', async (req, res) => {
-    const { blogTitle, blogText, authorName } = req.body
+router.post('/posts', (req, res) => {
     const newPost = new Post({
-        blogTitle, blogText, authorName
-    });
+        blogTitle: req.body.blogTitle,
+        blogText: req.body.blogText,
+        authorName: req.body.authorName
+    })
 
-    
-    try {
-        const savedPost = await newPost.save();
-        res.json(savedPost)
-    } catch (err) {
-        console.error(err);
-    }
+
+    newPost.save()
+        .then(() => res.json("New blog post is created."))
+        .catch(err => res.status(400).json(`Error: ${err}`));
 
 })
 
