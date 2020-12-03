@@ -4,7 +4,8 @@ const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const validator = require('validator');
-const auth = require('../middleware/auth')
+const UserKey = require('../models/UserKey');
+const auth = require('../middleware/auth');
 
 require('dotenv').config();
 
@@ -164,6 +165,43 @@ router.post("/tokenIsValid", async (req, res) => {
     } catch (err) {
         res.status(500).json({ error: err.message })
     }})
+
+
+router.post("/forgot-password/", async (req, res) => {
+    const { email } = req.body
+
+    const user = await User.findOne({ email })
+
+    try {
+        if (!validator.isEmail(email) || !email) {
+            return res
+                .status(400)
+                .send({ error: "Please enter a valid email. "})
+        } else if (!user) {
+            return res
+                .status(404)
+                .send({ error: 'No account has been found related to that email. '})
+        } else if (user) {
+            const userK = new UserKey;
+            await userK.save()
+
+            await userK.updateOne({ userId: user.id, keyType: "forgot-password" })
+
+            // sendPassword(user, userK)
+
+            return res
+                .status(200)
+                .send("Password change mail has been sent.")
+        }
+        
+    } catch (e) {
+        return res
+            .status(500)
+            .send()
+    }
+
+})
+
 
 
 
