@@ -2,7 +2,9 @@ const { Console } = require('console');
 const nodemailer = require('nodemailer')
 const nodemailerSendgrid = require('nodemailer-sendgrid')
 const path = require('path');
-require('dotenv').config( { path: path.resolve(__dirname, '../../.env') } );
+require('dotenv').config({
+    path: `${__dirname}/../../.env`
+});
 const { v4: uuidv4 } = require('uuid');
 
 

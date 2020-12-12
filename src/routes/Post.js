@@ -2,6 +2,7 @@ const express = require('express');
 const router = new express.Router();
 const Post = require('../models/Post');
 const mongoose = require('mongoose');
+const auth = require('../middleware/auth');
 
 
 router.get('/posts', async (req, res) => {
@@ -24,7 +25,7 @@ router.get('/posts/:id', async (req, res) => {
         .catch(err => res.status(400).json(`Error: ${err} `))
 })
 
-router.post('/posts', (req, res) => {
+router.post('/posts', async (req, res) => {
     const newPost = new Post({
         blogTitle: req.body.blogTitle,
         blogText: req.body.blogText,
@@ -34,7 +35,7 @@ router.post('/posts', (req, res) => {
 
     newPost.save()
         .then(() => res.json("New blog post is created."))
-        .catch(err => res.status(400).json(`Error: ${err}`));
+        .catch(err => res.status(400).send(err));
 
 })
 

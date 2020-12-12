@@ -2,21 +2,19 @@ const express = require('express');
 const mongoose = require('mongoose');
 const postRouter = require('./routes/Post');
 const userRouter = require('./routes/User');
-
-
 const cors = require('cors');
 require('dotenv').config({
-    path: `${__dirname}/.env`
+    path: `${__dirname}/../.env`
 });
-
 const app = express();
+
 
 app.use(cors());
 app.use(express.json());
 app.use('/api', postRouter);
 app.use('/api', userRouter);
 
-const uri = "mongodb+srv://efemert95:efemert95@blog.go3nn.mongodb.net/blog?retryWrites=true&w=majority"
+const uri = process.env.ATLAS_URI;
 
 const connection = mongoose.connection
 connection.once('open', () => {
