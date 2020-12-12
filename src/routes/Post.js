@@ -74,12 +74,13 @@ router.put('/posts/:id', (req, res) => {
 
         post
             .save()
-            .then(() => res.json("The Article is updated successfully."))
+            .then(() => res.json("The Post is updated successfully."))
             .catch(err => res.status(400).json(`Error: ${err}`))
     })
     .catch(err => res.status(400).json(`Error: ${err}`))
 
 })
+
 /*
 router.delete('/posts', (req, res) => {
     const { blogTitle, blogText, authorName } = req.body
