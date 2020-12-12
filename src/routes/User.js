@@ -156,6 +156,28 @@ router.post('/login', async (req, res) => {
     })
 
 
+    router.get('/forgot-password/:forgotToken', async (req, res) => {
+        const {forgotToken} = req.params
+        
+        const userK = await User.findOne({ forgotToken })
+        
+        if (!forgotToken) {
+            return res
+                .status(400)
+                .send({ msg: "Forgot token not found in the URL. Please enter your Forgot Token. "})
+        } else if (!userK) {
+            return res
+                .status(400)
+                .send({ msg: "No user found with the related forgot token. Empty or wrong token. "})
+        }
+        
+        return res
+            .status(200)
+            .send()
+        
+        })
+        
+        
     router.post("/tokenIsValid", async (req, res) => {
         try {
             const token = req.header("x-auth-token");
@@ -175,40 +197,86 @@ router.post('/login', async (req, res) => {
     
     
 
-    router.post("/forgot-password/", async (req, res) => {
-        const { email } = req.body
-    
-        const user = await User.findOne({ email })
-    
-        try {
-            if (!validator.isEmail(email) || !email) {
-                return res
-                    .status(400)
-                    .send({ msg: "Please enter a valid email. "})
-            } else if (!user) {
-                return res
-                    .status(404)
-                    .send({ msg: 'No account has been found related to that email. '})
-            } else if (user.forgotToken) {
-                return res
-                    .status(400)
-                    .send({ msg: "Password change mail is already been sent. Please check your email."})
-            } else if (user) {
-                
+        router.post("/forgot-password/", async (req, res) => {
+            const { email } = req.body
         
-                await user.updateOne({ forgotToken: uuid })
-    
-                await sendForgotPassword(user)
+            const user = await User.findOne({ email })
+        
+            try {
+                if (!validator.isEmail(email) || !email) {
+                    return res
+                        .status(400)
+                        .send({ msg: "Please enter a valid email. "})
+                } else if (!user) {
+                    return res
+                        .status(404)
+                        .send({ msg: 'No account has been found related to that email. '})
+                } else if (user.forgotToken) {
+                    return res
+                        .status(400)
+                        .send({ msg: "Password change mail is already been sent. Please check your email."})
+                } else if (user) {
+                    
             
+                    await user.updateOne({ forgotToken: uuid })
+        
+                    await sendForgotPassword(user)
+                
+                return res
+                    .status(200)
+                    .send("Password change mail has been sent.")
+                }} catch (e) {
+                return res
+                    .status(500)
+                    .send()
+                }
+        })
+        
+    
+    router.post('/change-password', async (req, res) => {
+
+        try {
+            const { newPassword, forgotToken } = req.body
+            const digit = /^(?=.*\d)/
+            const upperLetter = /^(?=.*[A-Z])/
+    
+            if (!newPassword || !forgotToken) {
             return res
-                .status(200)
-                .send("Password change mail has been sent.")
+                .status(400)
+                .send({ msg: "Please enter your new password and your forgot password key token."})
+            } 
+        
+            const userK = await User.findOne({ forgotToken })
+    
+            if (!userK) {
+            return res.status(400).send({
+                msg: 'Token does not match. Enter the valid token.'
+            })}
+    
+            if (newPassword && userK){
+            if (!digit.test(newPassword) || !upperLetter.test(newPassword)) {
+            return res.status(400).send({
+                msg:
+                'Please enter at least a number and an uppercase letter with your password.',
+            })} else if (newPassword.length < 8) {
+            return res.status(400).send({
+                msg: 'Please enter a password that is at least 8 or more characters.',
+            })} else if (digit.test(newPassword) && upperLetter.test(newPassword) && !(newPassword.length < 8) ) {
+    
+    
+            let encNewPassword = ''
+            let theNewSalt = await bcrypt.genSalt(10)
+            encNewPassword = await bcrypt.hash(newPassword, theNewSalt)
+    
+            await userK.updateOne({ password: encNewPassword, forgotToken: null, activatedDateTime: null })
+    
+            return res.status(200).send("Password has been successfully changed.")
+            }
             }} catch (e) {
-            return res
-                .status(500)
-                .send()
+            return res.status(500).send(e)
             }
     })
+    
     
 
 

@@ -36,3 +36,4 @@ app.listen(PORT, () => {
     console.log(`Server ${PORT} is running`)
 })
 
+console.log(Date.now())
