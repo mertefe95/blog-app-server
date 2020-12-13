@@ -29,7 +29,7 @@ router.post('/posts', async (req, res) => {
     const newPost = new Post({
         blogTitle: req.body.blogTitle,
         blogText: req.body.blogText,
-        authorName: req.body.authorName
+        userId: req.body.userId
     })
 
 
@@ -55,7 +55,9 @@ router.patch('/posts/:id', async (req,res) => {
         await post.save()
 
         if (!post) {
-            return res.status(404).send()
+            return res.status(404).send({
+                msg: 'Token does not match. Enter the valid token.'
+            })
         }
 
         res.send(post)
@@ -105,7 +107,7 @@ router.delete('/posts', (req, res) => {
 router.delete('/posts/:id', async (req,res) => {
     Post.findByIdAndDelete(req.params.id)
         .then(() => res.json('The Post is DELETED.'))
-        .catch(err => res.status(400).json(`Error: ${err}`));
+        .catch(err => res.status(400).json( ));
 });
 
 

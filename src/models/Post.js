@@ -21,7 +21,7 @@ const postSchema = new Schema({
             }
         }
     },
-    authorName: {
+    userId: {
         type: String,
         required: true,
         validator(value) {

@@ -31,7 +31,7 @@ router.get('/users/:id', async (req, res) => {
     if (!user) {
         return res
             .status(400)
-            .send({ error: "User not found."})
+            .send({ msg: "User not found."})
     }
 
     return res
@@ -46,6 +46,26 @@ router.get('/', auth, async (req, res) => {
         id: user._id
     });
 });
+
+router.get('/forgot-password/:forgotToken', async (req, res) => {
+    const {forgotToken} = req.params
+    
+    const userK = await User.findOne({ forgotToken })
+    
+    if (!forgotToken) {
+        return res
+            .status(400)
+            .send({ msg: "Forgot token not found in the URL. Please enter your Forgot Token. "})
+    } else if (!userK) {
+        return res
+            .status(400)
+            .send({ msg: "No user found with the related forgot token. Empty or wrong token. "})
+    }
+    
+    return res
+        .status(200)
+        .send()
+})
 
 router.post('/register', async (req, res) => {
     const { username, email, password } = req.body
@@ -103,8 +123,8 @@ if (!digit.test(password) || !upperLetter.test(password)) {
         sendConfirmationEmail(user)
 
         res.status(200).send('Successful registration. Please verify your email. ')
-} catch (e) {
-        res.status(400).send(e)
+} catch (err) {
+        res.status(400).send(err)
     }
 })
 
@@ -150,63 +170,42 @@ router.post('/login', async (req, res) => {
                         }})
                 }
             }
-    } catch (e) {
-        res.status(500).send(e)
+    } catch (err) {
+        res.status(500).send(err)
     }
-    })
+})
 
 
-    router.get('/forgot-password/:forgotToken', async (req, res) => {
-        const {forgotToken} = req.params
+router.post("/tokenIsValid", async (req, res) => {
+    try {
+        const token = req.header("x-auth-token");
+        if (!token) return res.json(false);
+    
+        const verified = jwt.verify(token, process.env.SECRET_TOKEN);
+        if (!verified) return res.json(false);
+    
+    
+        const user = await User.find(verified.id);
+        if (!user) return res.json(false);
+    
+        return res.json(true);
+    } catch (err) {
+        res.status(500).json({ msg: err.message })
+    }
+})
+    
+    
+
+router.post("/forgot-password/", async (req, res) => {
+    const { email } = req.body
         
-        const userK = await User.findOne({ forgotToken })
+    const user = await User.findOne({ email })
         
-        if (!forgotToken) {
+    try {
+        if (!validator.isEmail(email) || !email) {
             return res
                 .status(400)
-                .send({ msg: "Forgot token not found in the URL. Please enter your Forgot Token. "})
-        } else if (!userK) {
-            return res
-                .status(400)
-                .send({ msg: "No user found with the related forgot token. Empty or wrong token. "})
-        }
-        
-        return res
-            .status(200)
-            .send()
-        
-        })
-        
-        
-    router.post("/tokenIsValid", async (req, res) => {
-        try {
-            const token = req.header("x-auth-token");
-            if (!token) return res.json(false);
-    
-            const verified = jwt.verify(token, process.env.SECRET_TOKEN);
-            if (!verified) return res.json(false);
-    
-    
-            const user = await User.find(verified.id);
-            if (!user) return res.json(false);
-    
-            return res.json(true);
-        } catch (err) {
-            res.status(500).json({ msg: err.message })
-        }})
-    
-    
-
-        router.post("/forgot-password/", async (req, res) => {
-            const { email } = req.body
-        
-            const user = await User.findOne({ email })
-        
-            try {
-                if (!validator.isEmail(email) || !email) {
-                    return res
-                        .status(400)
-                        .send({ msg: "Please enter a valid email. "})
+                .send({ msg: "Please enter a valid email. "})
                 } else if (!user) {
                     return res
                         .status(404)
@@ -225,10 +224,10 @@ router.post('/login', async (req, res) => {
                 return res
                     .status(200)
                     .send("Password change mail has been sent.")
-                }} catch (e) {
+                }} catch (err) {
                 return res
                     .status(500)
-                    .send()
+                    .send(err)
                 }
         })
         
@@ -272,8 +271,8 @@ router.post('/login', async (req, res) => {
     
             return res.status(200).send("Password has been successfully changed.")
             }
-            }} catch (e) {
-            return res.status(500).send(e)
+            }} catch (err) {
+            return res.status(500).send(err)
             }
     })
     
