@@ -29,7 +29,18 @@ const postSchema = new Schema({
                 throw new Error('Please enter an author name for your post.')
             }
         }
+    },
+    authorName: {
+        type: String,
+        required: true,
+        validator(value) {
+            if(validator.isEmpty(value)) {
+                throw new Error('Please enter an author name for your post.')
+            }
+        }
     }
+
+
 }, {
     timestamps: true
 })

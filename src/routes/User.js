@@ -120,7 +120,7 @@ if (!digit.test(password) || !upperLetter.test(password)) {
         await user.save()
 
 
-        sendConfirmationEmail(user)
+        // sendConfirmationEmail(user)
 
         res.status(200).send('Successful registration. Please verify your email. ')
 } catch (err) {

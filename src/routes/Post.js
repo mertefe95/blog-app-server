@@ -29,8 +29,10 @@ router.post('/posts', async (req, res) => {
     const newPost = new Post({
         blogTitle: req.body.blogTitle,
         blogText: req.body.blogText,
-        userId: req.body.userId
+        userId: req.body.userId,
+        authorName: req.body.authorName
     })
+
 
 
     newPost.save()
@@ -69,18 +71,17 @@ router.patch('/posts/:id', async (req,res) => {
 
 router.put('/posts/:id', (req, res) => {
 
-        Post.findById(req.params.id).then(post => {
+
+        Post.findOne({id: req.params.id, userId: req.body.userId }).then(post => {
         post.blogTitle = req.body.blogTitle;
         post.blogText = req.body.blogText;
-        post.authorName = req.body.authorName;
-
 
         post
             .save()
             .then(() => res.json("The Post is updated successfully."))
-            .catch(err => res.status(400).json(`Error: ${err}`))
+            .catch(err => res.status(400).json({ msg: "No match. "}))
     })
-    .catch(err => res.status(400).json(`Error: ${err}`))
+    .catch(err => res.status(400).json({ msg: "Wrong Request" }))
 
 })
 
