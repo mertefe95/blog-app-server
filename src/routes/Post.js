@@ -37,7 +37,7 @@ router.post('/posts', async (req, res) => {
 
     newPost.save()
         .then(() => res.json("New blog post is created."))
-        .catch(err => res.status(400).send(err));
+        .catch(err => res.status(400).send({ msg: err.message }));
 
 })
 
@@ -47,7 +47,7 @@ router.patch('/posts/:id', async (req,res) => {
     const isValidOperation = updates.every((update) => allowedUpdates.includes(update))
 
     if (!isValidOperation) {
-        return res.status(400).send({ error: 'Invalid updates! '})
+        return res.status(400).send({ msg: 'Invalid updates! '})
     }
 
     try {
@@ -108,7 +108,7 @@ router.delete('/posts', (req, res) => {
 router.delete('/posts/:id', async (req,res) => {
     Post.findByIdAndDelete(req.params.id)
         .then(() => res.json('The Post is DELETED.'))
-        .catch(err => res.status(400).json( ));
+        .catch(err => res.status(400).json( { msg: err.message }));
 });
 
 

@@ -124,7 +124,7 @@ if (!digit.test(password) || !upperLetter.test(password)) {
 
         res.status(200).send('Successful registration. Please verify your email. ')
 } catch (err) {
-        res.status(400).send(err)
+        res.status(400).send({ msg: err.message })
     }
 })
 
@@ -171,7 +171,7 @@ router.post('/login', async (req, res) => {
                 }
             }
     } catch (err) {
-        res.status(500).send(err)
+        res.status(500).send({ msg: err.message })
     }
 })
 
@@ -227,7 +227,7 @@ router.post("/forgot-password/", async (req, res) => {
                 }} catch (err) {
                 return res
                     .status(500)
-                    .send(err)
+                    .send({ msg: err.message })
                 }
         })
         
@@ -272,7 +272,7 @@ router.post("/forgot-password/", async (req, res) => {
             return res.status(200).send("Password has been successfully changed.")
             }
             }} catch (err) {
-            return res.status(500).send(err)
+            return res.status(500).send({ msg: err.message })
             }
     })
     
