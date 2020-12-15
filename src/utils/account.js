@@ -11,7 +11,7 @@ const transport = nodemailer.createTransport(
 )
 
 const sendForgotPassword = (user) => {
-    const url = `http://localhost:8080/api/forgot-password/${user.forgotToken}`
+    const url = `http://localhost:3000/change-password/${user.forgotToken}`
 
     transport.sendMail({
         from: process.env.ADMIN_EMAIL,

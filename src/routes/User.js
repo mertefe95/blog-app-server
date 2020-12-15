@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const validator = require('validator');
 const auth = require('../middleware/auth');
+const { sendConfirmationEmail, sendActivatedEmail, sendForgotPassword } = require('../utils/account');
 
 
 require('dotenv').config({
@@ -64,7 +65,36 @@ router.get('/forgot-password/:forgotToken', async (req, res) => {
     
     return res
         .status(200)
-        .send()
+        .send({ msg: "Token valid, please enter your new password."})
+})
+
+router.get('/activation/:activationKey', async (req, res) => {
+    const { activationKey } = req.params
+
+    if (!activationKey) {
+        return res.status(400).send({ msg: "Activation token missing. " } )
+    }
+
+    const user = await User.findOne({ activationKey })
+
+    if (!user) {
+        return res.status(404).send({ msg: "User not found with the activation token. "})
+    }
+
+    const { activatedDateTime, email } = user
+
+    if (!activatedDateTime === null) {
+        return res.status(404).send({ msg: "User already activated. "})
+    }
+
+    const dateNow = Date.now().toString()
+
+    await User.updateOne(
+        { activationKey },
+        { activatedDateTime: dateNow, lastUpdated: dateNow }
+    )
+
+    return res.status(200).send({ msg: "User succesfully activated. Please proceed to login. "})
 })
 
 router.post('/register', async (req, res) => {
@@ -120,7 +150,7 @@ if (!digit.test(password) || !upperLetter.test(password)) {
         await user.save()
 
 
-        // sendConfirmationEmail(user)
+            sendConfirmationEmail(user)
 
         res.status(200).send('Successful registration. Please verify your email. ')
 } catch (err) {
@@ -144,7 +174,7 @@ router.post('/login', async (req, res) => {
                 return res
                     .status(400)
                     .send({ msg: "An account with this email or username does not exists."})
-            } else if (user && !user.activatedDateTime) {
+            } else if (user && user.activatedDateTime === null) {
                 return res
                     .status(400)
                     .send({ msg: "Please activate your account from the link we've sent to your email. "})

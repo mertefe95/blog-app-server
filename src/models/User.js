@@ -41,7 +41,7 @@ const userSchema = new Schema({
     },
     activatedDateTime: {
         type: Date,
-        default: Date.now()
+        default: null
     },
     lastUpdated: {
         type: Date,
