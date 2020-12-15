@@ -6,7 +6,7 @@ const bcrypt = require('bcryptjs');
 const validator = require('validator');
 const auth = require('../middleware/auth');
 const { v4: uuidv4 } = require('uuid');
-const { sendConfirmationEmail, sendActivatedEmail, sendForgotPassword } = require('../utils/account');
+const { sendVerificationEmail, sendActivatedEmail, sendForgotPassword } = require('../utils/account');
 const { uuid } = require('uuidv4');
 
 
