@@ -31,19 +31,19 @@ const sendActivatedEmail = (user) => {
     })
 }
 
-const sendConfirmationEmail = (user) => {
+const sendVerificationEmail = (user) => {
     const url = `http://localhost:8080/api/activation/${user.activationKey}`
 
     transport.sendMail({
         from: process.env.ADMIN_EMAIL,
         to: `<${user.email}>`,
-        subject: "Confirmation Email",
+        subject: "Verification Email",
         html: `Please click the link to verify your email. <a href=${url}> ${url}</a>`
     })
 }
 
 module.exports = {
-    sendConfirmationEmail,
+    sendVerificationEmail,
     sendActivatedEmail,
     sendForgotPassword
 }
