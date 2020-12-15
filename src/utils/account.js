@@ -22,17 +22,18 @@ const sendForgotPassword = (user) => {
 }
 
 const sendActivatedEmail = (user) => {
+    const url = `http://localhost:3000/login`
 
     transport.sendMail({
         from: process.env.ADMIN_EMAIL,
         to: `<${user.email}`,
         subject: "Your Email has been Activated",
-        html: `Your Email has been activated. You may go to our web page and proceed to login.`
+        html: `Your Email has been activated. You may go to our web page and proceed to login. <a href=${url}> ${url}</a>`
     })
 }
 
 const sendVerificationEmail = (user) => {
-    const url = `http://localhost:8080/api/activation/${user.activationKey}`
+    const url = `http://localhost:3000/user-activated/${user.activationKey}`
 
     transport.sendMail({
         from: process.env.ADMIN_EMAIL,
