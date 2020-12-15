@@ -83,9 +83,8 @@ router.get('/activation/:activationKey', async (req, res) => {
         return res.status(404).send({ msg: "User not found with the activation token. "})
     }
 
-    const { activatedDateTime, email } = user
 
-    if (!activatedDateTime === null) {
+    if (!user.activatedDateTime === null) {
         return res.status(404).send({ msg: "User already activated. "})
     }
 
@@ -97,9 +96,9 @@ router.get('/activation/:activationKey', async (req, res) => {
     )
     
     
-    sendActivatedEmail()
+    await sendActivatedEmail(user)
 
-    return res.status(200).send({ msg: "User succesfully activated. Please proceed to login. "})
+    return res.status(200).send({ msg: "User succesfully activated. "})
 })
 
 router.post('/register', async (req, res) => {
