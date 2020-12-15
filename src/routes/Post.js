@@ -72,16 +72,16 @@ router.patch('/posts/:id', async (req,res) => {
 router.put('/posts/:id', (req, res) => {
 
 
-        Post.findOne({id: req.params.id, userId: req.body.userId }).then(post => {
+        Post.findOne({_id: req.params.id, userId: req.body.userId }).then(post => {
         post.blogTitle = req.body.blogTitle;
         post.blogText = req.body.blogText;
 
         post
             .save()
-            .then(() => res.json("The Post is updated successfully."))
-            .catch(err => res.status(400).json({ msg: "No match. "}))
+            .then(() => res.status(200).send( {msg: "The Post is updated successfully."}))
+            .catch(err => res.status(400).send({ msg: "No match. "}))
     })
-    .catch(err => res.status(400).json({ msg: "Wrong Request" }))
+    .catch(err => res.status(500).send({ msg: "Wrong Request" }))
 
 })
 
