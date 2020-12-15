@@ -244,17 +244,19 @@ router.post("/forgot-password/", async (req, res) => {
                     return res
                         .status(404)
                         .send({ msg: 'No account has been found related to that email. '})
-                } else if (user.forgotToken) {
+                } else if (!user.forgotToken === null || !user.forgotToken === undefined) {
                     return res
                         .status(400)
                         .send({ msg: "Password change mail is already been sent. Please check your email."})
-                } else if (user) {
+                } else if (user || user.forgotToken === null || user.forgotToken === undefined) {
                     
-                    const forgotToken = uuidv4()
+                    const forgotT = uuidv4()
 
-                    await user.updateOne({ forgotToken: forgotToken })
+                    await user.updateOne({ forgotToken: forgotT })
         
-                    await sendForgotPassword(user)
+                    await sendForgotPassword(user, forgotT)
+
+
                 
                 return res
                     .status(200)
@@ -302,7 +304,7 @@ router.post("/forgot-password/", async (req, res) => {
             let theNewSalt = await bcrypt.genSalt(10)
             encNewPassword = await bcrypt.hash(newPassword, theNewSalt)
     
-            await userK.updateOne({ password: encNewPassword, forgotToken: null, activatedDateTime: null })
+            await userK.updateOne({ password: encNewPassword, forgotToken: null  })
     
             return res.status(200).send("Password has been successfully changed.")
             }
