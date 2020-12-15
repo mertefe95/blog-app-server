@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const validator = require('validator');
 const auth = require('../middleware/auth');
+import { v4 as uuidv4 } from 'uuid';
 const { sendConfirmationEmail, sendActivatedEmail, sendForgotPassword } = require('../utils/account');
 
 
@@ -65,7 +66,7 @@ router.get('/forgot-password/:forgotToken', async (req, res) => {
     
     return res
         .status(200)
-        .send({ msg: "Token valid, please enter your new password."})
+        .send({ msg: "Token valid, please enter your new password. "})
 })
 
 router.get('/activation/:activationKey', async (req, res) => {
@@ -246,8 +247,7 @@ router.post("/forgot-password/", async (req, res) => {
                         .send({ msg: "Password change mail is already been sent. Please check your email."})
                 } else if (user) {
                     
-            
-                    await user.updateOne({ forgotToken: uuid })
+                    await user.updateOne({ forgotToken: uuidv4 })
         
                     await sendForgotPassword(user)
                 

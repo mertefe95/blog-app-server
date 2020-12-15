@@ -17,7 +17,7 @@ const sendForgotPassword = (user) => {
         from: process.env.ADMIN_EMAIL,
         to: `<${user.email}`,
         subject: "Forgot password mail",
-        html: `Forgot Password Mail Test <a href=${url}> ${url} </a>`
+        html: `Please click the link to change your password. <a href=${url}> ${url} </a>`
     })
 }
 
@@ -27,7 +27,7 @@ const sendActivatedEmail = (user) => {
         from: process.env.ADMIN_EMAIL,
         to: `<${user.email}`,
         subject: "Your Email has been Activated",
-        html: `Your Email has been activated. Please visit our homepage.`
+        html: `Your Email has been activated. You may go to our web page and proceed to login.`
     })
 }
 
@@ -38,7 +38,7 @@ const sendConfirmationEmail = (user) => {
         from: process.env.ADMIN_EMAIL,
         to: `<${user.email}>`,
         subject: "Confirmation Email",
-        html: `Confirmation Email testing :) <a href=${url}> ${url}</a>`
+        html: `Please click the link to verify your email. <a href=${url}> ${url}</a>`
     })
 }
 
