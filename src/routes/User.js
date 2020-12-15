@@ -7,6 +7,7 @@ const validator = require('validator');
 const auth = require('../middleware/auth');
 const { v4: uuidv4 } = require('uuid');
 const { sendConfirmationEmail, sendActivatedEmail, sendForgotPassword } = require('../utils/account');
+const { uuid } = require('uuidv4');
 
 
 require('dotenv').config({
@@ -250,7 +251,9 @@ router.post("/forgot-password/", async (req, res) => {
                         .send({ msg: "Password change mail is already been sent. Please check your email."})
                 } else if (user) {
                     
-                    await user.updateOne({ forgotToken: uuidv4 })
+                    const forgotToken = uuidv4()
+
+                    await user.updateOne({ forgotToken: forgotToken })
         
                     await sendForgotPassword(user)
                 
@@ -317,7 +320,7 @@ router.delete('/users/:id', async (req, res) => {
         if (!user) {
             return res.status(404).send()
         }
-      
+    
         res
             .status(200)
             .send(user)
