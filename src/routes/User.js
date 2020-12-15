@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const validator = require('validator');
 const auth = require('../middleware/auth');
-import { v4 as uuidv4 } from 'uuid';
+const { v4: uuidv4 } = require('uuid');
 const { sendConfirmationEmail, sendActivatedEmail, sendForgotPassword } = require('../utils/account');
 
 
@@ -94,6 +94,9 @@ router.get('/activation/:activationKey', async (req, res) => {
         { activationKey },
         { activatedDateTime: dateNow, lastUpdated: dateNow }
     )
+    
+    
+    sendActivatedEmail()
 
     return res.status(200).send({ msg: "User succesfully activated. Please proceed to login. "})
 })
