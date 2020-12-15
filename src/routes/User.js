@@ -38,7 +38,7 @@ router.get('/users/:id', async (req, res) => {
 
     return res
         .status(200)
-        .status(user)
+        .send(user)
 })
 
 router.get('/', auth, async (req, res) => {
@@ -310,7 +310,21 @@ router.post("/forgot-password/", async (req, res) => {
     })
     
     
-
+router.delete('/users/:id', async (req, res) => {
+    try {
+        const user = await User.findByIdAndDelete(req.params.id)
+    
+        if (!user) {
+            return res.status(404).send()
+        }
+      
+        res
+            .status(200)
+            .send(user)
+        } catch (e) {
+        res.status(500).send()
+        }
+    })
 
 
 
