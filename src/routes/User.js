@@ -44,6 +44,7 @@ router.get('/users/:id', async (req, res) => {
 
 router.get('/', auth, async (req, res) => {
     const user = await User.findById(req.user);
+
     res.json({
         username: user.username,
         id: user._id
@@ -218,7 +219,7 @@ router.post("/tokenIsValid", async (req, res) => {
         const verified = jwt.verify(token, process.env.SECRET_TOKEN);
         if (!verified) return res.json(false);
     
-        const user = await User.find(verified.id);
+        const user = await User.findById(verified.id);
         if (!user) return res.json(false);
     
         return res.json(true);
