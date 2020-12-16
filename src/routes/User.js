@@ -218,7 +218,6 @@ router.post("/tokenIsValid", async (req, res) => {
         const verified = jwt.verify(token, process.env.SECRET_TOKEN);
         if (!verified) return res.json(false);
     
-    
         const user = await User.find(verified.id);
         if (!user) return res.json(false);
     
@@ -228,7 +227,7 @@ router.post("/tokenIsValid", async (req, res) => {
     }
 })
     
-    
+
 
 router.post("/forgot-password/", async (req, res) => {
     const { email } = req.body

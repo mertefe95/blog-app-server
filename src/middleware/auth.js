@@ -22,6 +22,7 @@ const auth = (req, res, next) => {
     }
 
     req.user = isVerified.id;
+    
     next();
     
     } catch (err) {
