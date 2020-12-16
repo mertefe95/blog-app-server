@@ -222,7 +222,10 @@ router.post("/tokenIsValid", async (req, res) => {
         const user = await User.findById(verified.id);
         if (!user) return res.json(false);
     
-        return res.json(true);
+        return res.json({
+            username: user.username,
+            id: user._id
+        });
     } catch (err) {
         res.status(500).json({ msg: err.message })
     }
